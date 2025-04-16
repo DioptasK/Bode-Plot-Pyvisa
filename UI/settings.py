@@ -1,8 +1,6 @@
 import customtkinter
 import tkinter as tk
 
-import sys
-sys.path.append('/home/user/Documents/Studium/pyvisa')
 
 from visa_py.resources import check_connection, query
 import output
@@ -45,7 +43,7 @@ class settings(customtkinter.CTkFrame):
 
         self.sweeptype_label = customtkinter.CTkLabel(self, text="Sweeptyp:", font=("Arial", -16))
         self.sweeptype_label.grid(row=2, column=1, padx=10, pady=5)
-        self.sweeptype = customtkinter.CTkOptionMenu(self, values=["log", "lin", "exp"])
+        self.sweeptype = customtkinter.CTkOptionMenu(self, values=["lin", "exp"])
         self.sweeptype.grid(row=3, column=1, padx=10, pady=5)
 
         self.default_samples = tk.StringVar(value="1000")
@@ -60,10 +58,7 @@ class settings(customtkinter.CTkFrame):
         self.samplerate_label = customtkinter.CTkLabel(self, text="Samplerate [/s]", font=("Arial", -16))
         self.samplerate_label.grid(row=4, column=1, padx=10, pady=5)
 
-        self.waveform_label = customtkinter.CTkLabel(self, text="Waveform:", font=("Arial", -16))
-        self.waveform_label.grid(row=2, column=1, padx=10, pady=5)
-        self.waveform = customtkinter.CTkOptionMenu(self, values=["sin", "ramp", "sqr", "saw", "pulse", "noise"])
-        self.waveform.grid(row=6, column=0, padx=10, pady=5)
+        
 
         def check():
             parameter.clear()
@@ -76,7 +71,7 @@ class settings(customtkinter.CTkFrame):
             sweeptype = ""
             samples = 0
             samplerate = 0
-            waveform = ""
+
 
             startfreqcheck, stopfreqcheck, amplitudecheck, samplescheck, sampleratecheck, scopeidcheck, signalgeneratoridcheck = False, False, False, False, False, False, False
 
@@ -122,8 +117,6 @@ class settings(customtkinter.CTkFrame):
 
             sweeptype = self.sweeptype.get()
             print(f"Sweeptype: {sweeptype}")
-            waveform = self.waveform.get()
-            print(f"Waveform: {waveform}")
 
             try:
                 samples = int(self.Samples.get())
@@ -148,14 +141,21 @@ class settings(customtkinter.CTkFrame):
 
             scope = self.master.hardwareframe.scope.get()
             functiongenerator = self.master.hardwareframe.signalgenerator.get()
-            #TODO: Auskommentieren
-            # if check_connection(scope, functiongenerator):
-            #     print("Connection check completed.")
-            #     print(f"Scope: {scope}\nFunction Generator: {functiongenerator}")
-            # else:
-            #     print("Connection failed. Please check device IDs.")
+            scope_manufacturer = self.master.hardwareframe.scope_manufacturer.get()
+            functiongenerator_manufacturer = self.master.hardwareframe.signalgenerator_manufacturer.get()
 
-            if (startfreqcheck and stopfreqcheck and amplitudecheck and samplescheck and sampleratecheck):# and scopeidcheck and signalgeneratoridcheck): 
+            #TODO: Auskommentieren
+            check = check_connection(scope, functiongenerator)
+            if check:
+                print("Connection check completed.")
+                for item in check:
+                    print(f"{item}")
+                scopeidcheck = True
+                signalgeneratoridcheck = True
+            else:
+                print("Connection failed. Please check device IDs.")
+
+            if (startfreqcheck and stopfreqcheck and amplitudecheck and samplescheck and sampleratecheck and scopeidcheck and signalgeneratoridcheck): 
                 print("All checks passed.")
                 self.start_button.configure(state="normal")
             else:
@@ -181,15 +181,16 @@ class settings(customtkinter.CTkFrame):
                 print("Eventuel Samplerate oder Samples anpassen\n")
             print("Drücke Start um Messung zu starten...")
              
-            parameter[0] = startfrequenzy
-            parameter[1] = stopfrequenzy
-            parameter[2] = amplitude
-            parameter[3] = sweeptype
-            parameter[4] = waveform
-            parameter[5] = samples
-            parameter[6] = samplerate
-            parameter[7] = scope
-            parameter[8] = functiongenerator
+            parameter.append(startfrequenzy)
+            parameter.append(stopfrequenzy)
+            parameter.append(amplitude)
+            parameter.append(sweeptype)
+            parameter.append(samples)
+            parameter.append(samplerate)
+            parameter.append(scope)
+            parameter.append(scope_manufacturer)
+            parameter.append(functiongenerator)
+            parameter.append(functiongenerator_manufacturer)
             print(parameter)
 
 
@@ -207,6 +208,7 @@ class settings(customtkinter.CTkFrame):
 
         def start():
             self.start_button.configure(state="disabled")
+            print(parameter)
             results = query(parameter)
             self.master.outputframe.plot(results)
 

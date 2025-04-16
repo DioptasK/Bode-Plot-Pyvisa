@@ -1,8 +1,5 @@
 import customtkinter
 
-import sys
-sys.path.append('/home/user/Documents/Studium/pyvisa')
-
 from visa_py import resources
 
 
@@ -12,10 +9,11 @@ class device_input(customtkinter.CTkFrame):
 
         self.grid_columnconfigure(0, weight=1) 
         self.grid_columnconfigure(1, weight=1) 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=2)
+        self.grid_rowconfigure(1, weight=2)
+        self.grid_rowconfigure(2, weight=2)
         self.grid_rowconfigure(3, weight=2)
+        self.grid_rowconfigure(4, weight=1)
 
 
         self.scope = customtkinter.CTkEntry(self, placeholder_text="Scope")
@@ -29,7 +27,14 @@ class device_input(customtkinter.CTkFrame):
         self.signalgenerator_label.grid(row=0, column=1, padx=10, pady=5)
 
         self.textbox = customtkinter.CTkTextbox(self)
-        self.textbox.grid(row=3, column=0,rowspan=1, columnspan=2, padx=10, pady=5, sticky="nsew")
+        self.textbox.grid(row=4, column=0,rowspan=1, columnspan=2, padx=10, pady=5, sticky="nsew")
+
+
+        self.scope_manufacturer = customtkinter.CTkOptionMenu(self, values=["Agilent", "Siglent", "Rigol"])
+        self.scope_manufacturer.grid(row=2, column=0, padx=10, pady=5)
+
+        self.signalgenerator_manufacturer = customtkinter.CTkOptionMenu(self, values=["Agilent", "Siglent", "Rigol", "Keysight"])
+        self.signalgenerator_manufacturer.grid(row=2, column=1, padx=10, pady=5)
         
         def refresh():
             devices = resources.get_connected_devices()
@@ -50,9 +55,13 @@ class device_input(customtkinter.CTkFrame):
             self.textbox.insert("end", "Connection check completed.\n")
             if  not result:
                 self.textbox.insert("end", "Connection failed.\n")
+            else:
+                for item in result:
+                    self.textbox.insert("end", f"{item}")
+                self.textbox.insert("end", "Connection successful.\n")
 
         self.refresh_button = customtkinter.CTkButton(self, text="Get Devices", command=refresh)
-        self.refresh_button.grid(row=2, column=0,padx=10, pady=5)
+        self.refresh_button.grid(row=3, column=0,padx=10, pady=5)
 
         self.check_connection_button = customtkinter.CTkButton(self, text="Check Connection", command=check)
-        self.check_connection_button.grid(row=2, column=1,padx=10, pady=5)
+        self.check_connection_button.grid(row=3, column=1,padx=10, pady=5)
