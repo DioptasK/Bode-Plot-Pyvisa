@@ -1,0 +1,8 @@
+Agilent_33220A:
+  name: Agilent 33220A
+  type: function_generator
+  max_sample_rate: 50e6
+  resulution: 14
+  max_amplitude: 10
+  min_amplitude: 10e-3
+  max_frequency: 20e6

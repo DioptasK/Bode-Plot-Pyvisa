@@ -30,35 +30,50 @@ class device_input(customtkinter.CTkFrame):
         self.textbox.grid(row=4, column=0,rowspan=1, columnspan=2, padx=10, pady=5, sticky="nsew")
 
 
-        self.scope_manufacturer = customtkinter.CTkOptionMenu(self, values=["Agilent", "Siglent", "Rigol"])
+        self.scope_manufacturer = customtkinter.CTkOptionMenu(self, values=["Siglent", "Rigol","Keysight", "Agilent"])
         self.scope_manufacturer.grid(row=2, column=0, padx=10, pady=5)
 
-        self.signalgenerator_manufacturer = customtkinter.CTkOptionMenu(self, values=["Agilent", "Siglent", "Rigol", "Keysight"])
+        self.signalgenerator_manufacturer = customtkinter.CTkOptionMenu(self, values=["Siglent", "Rigol", "Keysight", "Agilent"])
         self.signalgenerator_manufacturer.grid(row=2, column=1, padx=10, pady=5)
         
         def refresh():
+            self.textbox.insert("end", "Searching for devices...\n")
             devices = resources.get_connected_devices()
             if len(devices) == 0:
                 self.textbox.insert("end", "No devices found.\n")
             else:
-                self.textbox.delete("0.0", "end")
                 for device in devices:
                     self.textbox.insert("end", device + "\n")
+            self.textbox.see("end")
         
         def check():
+            self.textbox.insert("end", "Checking connection...\n")
             scope_id = self.scope.get()
             functiongenerator_id = self.signalgenerator.get()
-            if not scope_id or not functiongenerator_id:
-                self.textbox.insert("end", "Please enter both device IDs.\n")
+            if not scope_id:
+                self.textbox.insert("end", "No Scope ID given.\n")
+                self.textbox.see("end")
                 return
+            if not functiongenerator_id:
+                self.textbox.insert("end", "No Fuctiongenerator ID given\n")
+                self.textbox.see("end")
+            if not scope_id and not functiongenerator_id:
+                self.textbox.insert("end", "No Scope ID and no Functiongenerator ID given\n")
+                self.textbox.see("end")
+                return
+            
             result = resources.check_connection(scope_id, functiongenerator_id)
             self.textbox.insert("end", "Connection check completed.\n")
             if  not result:
                 self.textbox.insert("end", "Connection failed.\n")
+                self.textbox.see("end")
             else:
+                self.textbox.insert("end", "Connected to:\n")
                 for item in result:
                     self.textbox.insert("end", f"{item}")
+                    
                 self.textbox.insert("end", "Connection successful.\n")
+                self.textbox.see("end")
 
         self.refresh_button = customtkinter.CTkButton(self, text="Get Devices", command=refresh)
         self.refresh_button.grid(row=3, column=0,padx=10, pady=5)

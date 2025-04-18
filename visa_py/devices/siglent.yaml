@@ -1,0 +1,15 @@
+SDS_814XHD:
+  device: SDS_814XHD
+  type: oscilloscope
+  manufacturer: Siglent
+  model: SDS_814XHD
+  max_bandwidth: 100e6
+  max_sample_rate: 2e9
+  resultion: 12
+  #max_memory_depth: 100e6
+  analog_channels: 4
+  max_voltage: 400
+
+
+
+  

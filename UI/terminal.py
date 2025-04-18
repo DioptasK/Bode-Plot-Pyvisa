@@ -19,15 +19,13 @@ class terminal(customtkinter.CTkFrame):
         def clear():
             self.textbox.delete("0.0", "end")
 
-        #TODO: implement export to csv
+        #TODO: implement export to png anstatt csv
         def export_csv():
             with open("output.csv", "w") as file:
                 file.write(self.textbox.get("0.0", "end"))
-                file.write("\n")
-                file.write("Exported data from terminal.\n")
-                file.write("End of export.\n")
                 file.close()
             self.textbox.insert("end", "Data exported to output.csv\n")
+            self.textbox.see("end")
 
         self.clear_button = customtkinter.CTkButton(self, text="Clear", command=clear)
         self.clear_button.grid(row=0, column=1, padx=10, pady=5,sticky="nsew")
@@ -42,5 +40,5 @@ class terminal(customtkinter.CTkFrame):
         self.textbox.see("end")
 
     def flush(self):
-        pass  
+        self.textbox.update_idletasks()  
         

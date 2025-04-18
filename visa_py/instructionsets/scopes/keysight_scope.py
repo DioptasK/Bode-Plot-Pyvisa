@@ -1,11 +1,100 @@
 from .base_scope import BaseScope
 
+#TODO: Noch richtige Befehle einfügen, das sind siglent befehle
 class KeysightScope(BaseScope):
-    def set_channel_on(self, channel: int):
-        self.inst.write(f":CHAN{channel}:DISP ON")
 
-    def set_channel_off(self, channel: int):
-        self.inst.write(f":CHAN{channel}:DISP OFF")
+#Channel commands
+
+    def set_channel_output(self, channel: int, output: str):
+        self.inst.write(f":CHAN{channel}:SWITch {output}")
+
+    def set_channel_vertical_scale(self, channel: int, volts_per_div: float):
+        self.inst.write(f":CHANnel{channel}:SCALe {volts_per_div}")
+    
+    def set_channel_units(self, channel: int, units: str):
+        self.inst.write(f":CHANnel{channel}:UNIT {units}")
+    
+    def set_channel_attentuation(self, channel: int, attentuation: int):
+        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attentuation}")
+    
+    def set_channel_coupling(self, channel: int, coupling: str):
+        self.inst.write(f":CHANnel{channel}:COUPling {coupling}")
+    
+    def set_channel_bwlimit(self, channel: int, limit: str):
+        if limit == "ON":
+            self.inst.write(f":CHANnel{channel}:BWLimit 20M") 
+        elif limit == "OFF":
+            self.inst.write(f":CHANnel{channel}:BWLimit FULL")
+        else:
+            raise ValueError("Invalid bandwidth limit. Use 'ON' or 'OFF'.")
+    
+    def set_channel_label(self, channel: int, label: str):
+        self.inst.write(f":CHANnel{channel}:LABel ON")
+        self.inst.write(f":CHANnel{channel}:LABel:TEXT {label}")
+    
+    def set_channel_offset(self, channel:int ,offset: float):
+        self.inst.write(f":CHANnel{channel}:OFFSet {offset}")
+
+#Timebase commands
 
     def set_timebase(self, seconds_per_div: float):
-        self.inst.write(f":TIM:SCAL {seconds_per_div}")
+        self.inst.write(f":TIMebase:SCALe {seconds_per_div}")
+
+#Trigger commands
+
+    def set_trigger_mode(self, mode: str):
+        self.inst.write(f":TRIGger:MODE {mode}")
+
+    def set_trigger_source(self, channel: int):
+        self.inst.write(f":TRIGger:EDGE:SOURce CHANnel{channel}")
+
+    def set_trigger_level(self, level: float):
+        self.inst.write(f":TRIGger:LEVel {level}")
+
+#Function generator commands    
+#Befehle auf seite 743 im agilent pdf
+    def set_frequency(self, frequency: float):
+        self.inst.write(f":WGEN:FREQuency {frequency}")
+    
+    def set_amplitude(self, pkpk: float):
+        self.inst.write(f":WGEN:VOLTage {pkpk}")
+    
+    def set_offset(self, offset: float):
+        self.inst.write(f":WGEN:VOLTage:OFFSet {offset}")
+    
+    def set_waveform(self, waveform: str):
+        self.inst.write(f":WGEN:FUNCtion {waveform}")#SINusoid, SQUare, RAMP, PULSe, NOISe, DC, USER
+    
+    def set_output(self, output: str):
+        self.inst.write(f":WGEN:OUTPut {output}")#ON or OFF
+
+#Measurement commands
+
+    def measure_bode_setup(self, channel1: int, channel2: int):
+        self.inst.write(f":MEASure ON")
+        self.inst.write(f":MEASure:ADVanced:CLEar")
+        self.inst.write(f":MEASure:ADVanced:LINenumber 4")
+        self.inst.write(f":MEASure:ADVanced:P1 ON")
+        self.inst.write(f":MEASure:ADVanced:P2 ON")
+        self.inst.write(f":MEASure:ADVanced:P3 ON")
+        self.inst.write(f":MEASure:ADVanced:P4 ON")
+        self.inst.write(f".MEASure:ADVanced:P1:SOURce1 C{channel1}")
+        self.inst.write(f".MEASure:ADVanced:P2:SOURce1 C{channel2}")
+        self.inst.write(f".MEASure:ADVanced:P3:SOURce1 C{channel1}")
+        self.inst.write(f".MEASure:ADVanced:P4:SOURce1 C{channel1}")
+        self.inst.write(f".MEASure:ADVanced:P4:SOURce2 C{channel2}")
+        self.inst.write(f":MEASure:ADVanced:P1:TYPE RMS")
+        self.inst.write(f":MEASure:ADVanced:P2:TYPE RMS")
+        self.inst.write(f":MEASure:ADVanced:P3:TYPE FREQ")
+        self.inst.write(f":MEASure:ADVanced:P4:TYPE PHA")
+        self.inst.write(f":MEASure:MODE ADVanced")
+        self.inst.write(f":MEASure:ADVanced:STATistics ON")
+        self.inst.write(f":MEASure:ADVanced:STATistics: AIMLimit 10")
+
+    def measure(self):
+        rms1 = float(self.inst.query(f":MEASure:ADVanced:P1:STATistics? MEAN"))
+        rms2 = float(self.inst.query(f":MEASure:ADVanced:P2:STATistics? MEAN"))
+        freq = float(self.inst.query(f":MEASure:ADVanced:P3:STATistics? MEAN"))
+        phase = float(self.inst.query(f":MEASure:ADVanced:P4:STATistics? MEAN"))
+        return rms1, rms2, freq, phase
+    

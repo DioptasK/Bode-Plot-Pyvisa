@@ -47,3 +47,21 @@ class BaseScope:
         
 
 #Measurement commands
+    def measure_bode_setup(self, channel1: int, channel2: int):
+        raise NotImplementedError
+
+    def measure(self):
+        raise NotImplementedError
+    
+
+#Function generator commands
+    def set_frequency(self, frequency: float):
+        raise NotImplementedError
+    def set_amplitude(self, amplitude: float):
+        raise NotImplementedError
+    def set_offset(self, offset: float):
+        raise NotImplementedError
+    def set_waveform(self, waveform: str):
+        raise NotImplementedError
+    def set_output(self, output: str):
+        raise NotImplementedError

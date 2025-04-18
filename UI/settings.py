@@ -1,3 +1,4 @@
+import time
 import customtkinter
 import tkinter as tk
 
@@ -29,13 +30,13 @@ class settings(customtkinter.CTkFrame):
         self.startfrequenzy_label = customtkinter.CTkLabel(self, text="Startfrequenz [Hz]", font=("Arial", -16))
         self.startfrequenzy_label.grid(row=0, column=0, padx=10, pady=5)
 
-        self.default_stopfrequenzy = tk.StringVar(value="1000000")
+        self.default_stopfrequenzy = tk.StringVar(value="1000")
         self.stopfrequenzy = customtkinter.CTkEntry(self, textvariable=self.default_stopfrequenzy)
         self.stopfrequenzy.grid(row=1,column=1,padx=10, pady=5)
         self.stopfrequenzy_label = customtkinter.CTkLabel(self, text="Stopfrequenz [Hz]", font=("Arial", -16))
         self.stopfrequenzy_label.grid(row=0, column=1, padx=10, pady=5)
 
-        self.default_amplitude = tk.StringVar(value="2")
+        self.default_amplitude = tk.StringVar(value="3")
         self.amplitude = customtkinter.CTkEntry(self,textvariable=self.default_amplitude)
         self.amplitude.grid(row=3,column=0,padx=10, pady=5)
         self.amplitude_label = customtkinter.CTkLabel(self, text="Amplitude [Vpp]", font=("Arial", -16))
@@ -46,13 +47,13 @@ class settings(customtkinter.CTkFrame):
         self.sweeptype = customtkinter.CTkOptionMenu(self, values=["lin", "exp"])
         self.sweeptype.grid(row=3, column=1, padx=10, pady=5)
 
-        self.default_samples = tk.StringVar(value="1000")
+        self.default_samples = tk.StringVar(value="10")
         self.Samples = customtkinter.CTkEntry(self, textvariable=self.default_samples)
         self.Samples.grid(row=5,column=0,padx=10, pady=5)
         self.Samples_label = customtkinter.CTkLabel(self, text="Samples", font=("Arial", -16))
         self.Samples_label.grid(row=4, column=0, padx=10, pady=5)
 
-        self.default_samplerate = tk.StringVar(value="2")
+        self.default_samplerate = tk.StringVar(value="0.5")
         self.samplerate = customtkinter.CTkEntry(self, textvariable=self.default_samplerate)
         self.samplerate.grid(row=5,column=1,padx=10, pady=5)
         self.samplerate_label = customtkinter.CTkLabel(self, text="Samplerate [/s]", font=("Arial", -16))
@@ -131,8 +132,8 @@ class settings(customtkinter.CTkFrame):
 
             try:
                 samplerate = float(self.samplerate.get())
-                if samplerate > 1000 or samplerate < 0.1:
-                    print ("Samplerate must be a positive number greater than 0.1 and smaller than 1000.")
+                if samplerate > 20 or samplerate < 0.01:
+                    print ("Samplerate must be a positive number greater than 0.01 and smaller than 20.")
                     raise ValueError("")
                 print(f"Samplerate: {samplerate} /s")
                 sampleratecheck = True
@@ -144,8 +145,12 @@ class settings(customtkinter.CTkFrame):
             scope_manufacturer = self.master.hardwareframe.scope_manufacturer.get()
             functiongenerator_manufacturer = self.master.hardwareframe.signalgenerator_manufacturer.get()
 
-            #TODO: Auskommentieren
-            check = check_connection(scope, functiongenerator)
+            if not scope:
+                print("No Scope ID given.")
+            if scope == functiongenerator:
+                print("Scope and Functiongenerator ID are the same. Only opening Scope")
+                
+            check = check_connection(scope_id=scope, functiongenerator_id=functiongenerator)
             if check:
                 print("Connection check completed.")
                 for item in check:
@@ -208,9 +213,11 @@ class settings(customtkinter.CTkFrame):
 
         def start():
             self.start_button.configure(state="disabled")
-            print(parameter)
+            self.master.terminalframe.clear_button.invoke()
+            print(parameter, flush=True)
+            print("-----------Measuring-----------", flush=True)
             results = query(parameter)
-            self.master.outputframe.plot(results)
+            self.master.outputframe.plot(results) #TODO: plot
 
 
         self.start_button = customtkinter.CTkButton(self, text="Start", command=start)
