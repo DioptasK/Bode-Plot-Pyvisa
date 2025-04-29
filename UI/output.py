@@ -12,7 +12,14 @@ class output(customtkinter.CTkFrame):
 
     def plot(self, results):
 
-        #print(results)
+        
+        # erg = []
+        # for i in range(20):
+        #     result = [2,pow(3.7,i),20000*i,i*10]
+        #     erg.append(result)
+
+        # results = np.array(erg)
+
         
         if hasattr(self, 'canvas'):
             self.canvas.get_tk_widget().destroy()
@@ -34,6 +41,7 @@ class output(customtkinter.CTkFrame):
         ax1.set_ylabel("|H(f)|/dB", color='b')
         ax1.tick_params(axis='y', labelcolor='b')
         ax1.grid(True, linestyle='--')
+
 
         # Second plot (right y-axis)
         ax2 = ax1.twinx()

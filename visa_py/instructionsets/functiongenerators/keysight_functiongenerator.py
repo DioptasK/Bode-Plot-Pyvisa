@@ -2,7 +2,6 @@ from .base_functiongenerator import BaseFunctionGenerator
 
 class KeysightFunctionGenerator(BaseFunctionGenerator):
 
-#TODO: noch überprüfen ob sie funktionieren vor allem Zahlenformate
     def set_output(self, channel: int, output: str):
         raise NotImplementedError
     

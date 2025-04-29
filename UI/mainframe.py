@@ -4,6 +4,7 @@ import terminal
 import output
 import device_input
 import settings
+import threading
 
 customtkinter.set_appearance_mode("light")  # Set dark mode
 customtkinter.set_default_color_theme("green")  # Set color theme
@@ -25,8 +26,6 @@ class mainframe(customtkinter.CTk):
  
         self.hardwareframe = device_input.device_input(self)
         self.hardwareframe.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
-
-        
         
         self.outputframe = output.output(self)
         self.outputframe.grid(row=0, column=1, padx=10, pady=5, sticky="nsew")
@@ -38,6 +37,21 @@ class mainframe(customtkinter.CTk):
         self.terminalframe = terminal.terminal(self)
         self.terminalframe.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
         self.terminalframe.grid(columnspan=2)
+
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+    
+    def on_closing(self):
+        """Handler für das Schließen des Fensters."""
+        print("Programm wird beendet...")
+
+        # Threads stoppen (falls vorhanden)
+        for thread in threading.enumerate():
+            if thread is not threading.main_thread():
+                print(f"Beende Thread: {thread.name}")
+                thread.join(timeout=1)
+
+        self.destroy()  # Beendet das Fenster
+        exit(0)  # Beendet den Python-Prozess
 
 
 if __name__ == "__main__":

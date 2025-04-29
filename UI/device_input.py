@@ -13,7 +13,8 @@ class device_input(customtkinter.CTkFrame):
         self.grid_rowconfigure(1, weight=2)
         self.grid_rowconfigure(2, weight=2)
         self.grid_rowconfigure(3, weight=2)
-        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(4, weight=2)
+        self.grid_rowconfigure(5, weight=1)
 
 
         self.scope = customtkinter.CTkEntry(self, placeholder_text="Scope")
@@ -26,11 +27,7 @@ class device_input(customtkinter.CTkFrame):
         self.signalgenerator_label = customtkinter.CTkLabel(self, text="Signalgenerator-ID", font=("Arial", -16))
         self.signalgenerator_label.grid(row=0, column=1, padx=10, pady=5)
 
-        self.textbox = customtkinter.CTkTextbox(self)
-        self.textbox.grid(row=4, column=0,rowspan=1, columnspan=2, padx=10, pady=5, sticky="nsew")
-
-
-        self.scope_manufacturer = customtkinter.CTkOptionMenu(self, values=["Siglent", "Rigol","Keysight", "Agilent"])
+        self.scope_manufacturer = customtkinter.CTkOptionMenu(self, values=["Siglent", "Rigol","Keysight", "Agilent"])#TODO: Implement not_Visa devices
         self.scope_manufacturer.grid(row=2, column=0, padx=10, pady=5)
 
         self.signalgenerator_manufacturer = customtkinter.CTkOptionMenu(self, values=["Siglent", "Rigol", "Keysight", "Agilent"])
@@ -80,3 +77,12 @@ class device_input(customtkinter.CTkFrame):
 
         self.check_connection_button = customtkinter.CTkButton(self, text="Check Connection", command=check)
         self.check_connection_button.grid(row=3, column=1,padx=10, pady=5)
+
+        self.probe_1 = customtkinter.CTkOptionMenu(self, values=["Probe","10", "1"])
+        self.probe_1.grid(row=4, column=0,padx=10,pady=5)
+
+        self.probe_2 = customtkinter.CTkOptionMenu(self, values=["Probe","10", "1"])
+        self.probe_2.grid(row=4, column=1,padx=10,pady=5)
+
+        self.textbox = customtkinter.CTkTextbox(self)
+        self.textbox.grid(row=5, column=0,rowspan=1, columnspan=2, padx=10, pady=5, sticky="nsew")

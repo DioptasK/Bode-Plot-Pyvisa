@@ -1,59 +1,64 @@
 from .base_scope import BaseScope
+import re
 
-#TODO: Noch richtige Befehle einfügen, das sind siglent befehle
+
 class KeysightScope(BaseScope):
 
 #Channel commands
 
     def set_channel_output(self, channel: int, output: str):
-        self.inst.write(f":CHAN{channel}:SWITch {output}")
+        self.inst.write(f":CHANnel{channel}:DISPlay {output}")
 
     def set_channel_vertical_scale(self, channel: int, volts_per_div: float):
-        self.inst.write(f":CHANnel{channel}:SCALe {volts_per_div}")
+        volts_per_div = "{:.2E}".format(volts_per_div)
+        self.inst.write(f":CHANnel{channel}:SCALe {volts_per_div} V")
     
     def set_channel_units(self, channel: int, units: str):
-        self.inst.write(f":CHANnel{channel}:UNIT {units}")
+        if units == "V":
+            units = "VOLT"
+        elif units == "A":
+            units = "AMPere"
+        self.inst.write(f":CHANnel{channel}:UNITs {units}")
     
-    def set_channel_attentuation(self, channel: int, attentuation: int):
-        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attentuation}")
+    def set_channel_attenuation(self, channel: int, attenuation: int):
+        attenuation = "{:.2E}".format(attenuation)
+        self.inst.write(f":CHANnel{channel}:PROBe {attenuation}")
     
     def set_channel_coupling(self, channel: int, coupling: str):
         self.inst.write(f":CHANnel{channel}:COUPling {coupling}")
-    
+
     def set_channel_bwlimit(self, channel: int, limit: str):
-        if limit == "ON":
-            self.inst.write(f":CHANnel{channel}:BWLimit 20M") 
-        elif limit == "OFF":
-            self.inst.write(f":CHANnel{channel}:BWLimit FULL")
-        else:
-            raise ValueError("Invalid bandwidth limit. Use 'ON' or 'OFF'.")
+        self.inst.write(f":CHANnel{channel}:BWLimit {limit}")
     
     def set_channel_label(self, channel: int, label: str):
-        self.inst.write(f":CHANnel{channel}:LABel ON")
-        self.inst.write(f":CHANnel{channel}:LABel:TEXT {label}")
+        self.inst.write(f"CHANnel{channel}:LABel \"{label}\"")
     
     def set_channel_offset(self, channel:int ,offset: float):
-        self.inst.write(f":CHANnel{channel}:OFFSet {offset}")
+        self.inst.write(f":CHANnel{channel}:OFFSet {offset} V")
 
 #Timebase commands
 
-    def set_timebase(self, seconds_per_div: float):
+    def set_timebase(self, seconds_per_div):
+        seconds_per_div = "{:.2E}".format(seconds_per_div)
+        self.inst.write(f":TIMebase:MODE MAIN")
         self.inst.write(f":TIMebase:SCALe {seconds_per_div}")
+        #raise NotImplementedError
 
 #Trigger commands
 
     def set_trigger_mode(self, mode: str):
-        self.inst.write(f":TRIGger:MODE {mode}")
+        raise NotImplementedError
 
     def set_trigger_source(self, channel: int):
-        self.inst.write(f":TRIGger:EDGE:SOURce CHANnel{channel}")
+        raise NotImplementedError
 
     def set_trigger_level(self, level: float):
-        self.inst.write(f":TRIGger:LEVel {level}")
+        raise NotImplementedError
 
 #Function generator commands    
 #Befehle auf seite 743 im agilent pdf
     def set_frequency(self, frequency: float):
+        frequency = "{:.2E}".format(frequency)
         self.inst.write(f":WGEN:FREQuency {frequency}")
     
     def set_amplitude(self, pkpk: float):
@@ -71,30 +76,34 @@ class KeysightScope(BaseScope):
 #Measurement commands
 
     def measure_bode_setup(self, channel1: int, channel2: int):
-        self.inst.write(f":MEASure ON")
-        self.inst.write(f":MEASure:ADVanced:CLEar")
-        self.inst.write(f":MEASure:ADVanced:LINenumber 4")
-        self.inst.write(f":MEASure:ADVanced:P1 ON")
-        self.inst.write(f":MEASure:ADVanced:P2 ON")
-        self.inst.write(f":MEASure:ADVanced:P3 ON")
-        self.inst.write(f":MEASure:ADVanced:P4 ON")
-        self.inst.write(f".MEASure:ADVanced:P1:SOURce1 C{channel1}")
-        self.inst.write(f".MEASure:ADVanced:P2:SOURce1 C{channel2}")
-        self.inst.write(f".MEASure:ADVanced:P3:SOURce1 C{channel1}")
-        self.inst.write(f".MEASure:ADVanced:P4:SOURce1 C{channel1}")
-        self.inst.write(f".MEASure:ADVanced:P4:SOURce2 C{channel2}")
-        self.inst.write(f":MEASure:ADVanced:P1:TYPE RMS")
-        self.inst.write(f":MEASure:ADVanced:P2:TYPE RMS")
-        self.inst.write(f":MEASure:ADVanced:P3:TYPE FREQ")
-        self.inst.write(f":MEASure:ADVanced:P4:TYPE PHA")
-        self.inst.write(f":MEASure:MODE ADVanced")
-        self.inst.write(f":MEASure:ADVanced:STATistics ON")
-        self.inst.write(f":MEASure:ADVanced:STATistics: AIMLimit 10")
+        self.inst.write(f":MEASure:CLEar")
+        self.inst.write(f":MEASure:STATistics MEAN")
+        self.inst.write(f":MEASure:VRMS AC,CHANnel{channel1}")
+        self.inst.write(f":MEASure:VRMS AC,CHANnel{channel2}")
+        self.inst.write(f":MEASure:FREQuency CHANnel{channel1}")
+        #Phasenmeasurement überprüfen
+
+
 
     def measure(self):
-        rms1 = float(self.inst.query(f":MEASure:ADVanced:P1:STATistics? MEAN"))
-        rms2 = float(self.inst.query(f":MEASure:ADVanced:P2:STATistics? MEAN"))
-        freq = float(self.inst.query(f":MEASure:ADVanced:P3:STATistics? MEAN"))
-        phase = float(self.inst.query(f":MEASure:ADVanced:P4:STATistics? MEAN"))
-        return rms1, rms2, freq, phase
+        # rms1 = float(self.inst.query(f":MEASure:VRMS? CHANnel1"))
+        # rms2 = float(self.inst.query(f":MEASure:VRMS? CHANnel1"))
+        # freq = float(self.inst.query(f":MEASure:FREQuency? CHANnel1"))
+        phase = float(self.inst.query(f":MEASure:PHASe? CHANnel1,CHANnel2"))
+        self.inst.write(f":MEASure:STATistics:RESet")
+        result = self.inst.query(f":MEASure:RESults?")
+        result.append(phase)
+        #return rms1, rms2, freq, phase
+        res = [re.split(r'\s+', sub) for sub in result] # auf funktionalität prüfen!
+        return res
+
+
+    def measure_rms(self, channel: int):
+        return float(self.inst.query(f":MEASure:VRMS? CHANnel{channel}"))
     
+    def measure_freq(self, channel: int):
+        return float(self.inst.query(f":MEASure:FREQuency? CHANnel{channel}"))
+    
+    def measure_phase(self, channel1: int, channel2: int):
+        return float(self.inst.query(f":MEASure:PHASe? CHANnel{channel1},CHANnel{channel2}"))
+        

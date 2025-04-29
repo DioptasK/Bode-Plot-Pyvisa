@@ -2,6 +2,7 @@ import time
 import customtkinter
 import tkinter as tk
 
+from threading import Thread
 
 from visa_py.resources import check_connection, query
 import output
@@ -72,13 +73,15 @@ class settings(customtkinter.CTkFrame):
             sweeptype = ""
             samples = 0
             samplerate = 0
+            probe_1 = 0
+            probe_2 = 0
 
 
             startfreqcheck, stopfreqcheck, amplitudecheck, samplescheck, sampleratecheck, scopeidcheck, signalgeneratoridcheck = False, False, False, False, False, False, False
 
             try:
                 startfrequenzy = int(self.startfrequenzy.get())
-                if startfrequenzy < 0:
+                if startfrequenzy < 1:
                     print ("Start frequency must be a positive integer.")
                     raise ValueError("Start frequency must be a positive integer.")
                 print(f"Startfrequenzy: {startfrequenzy} Hz")
@@ -144,10 +147,23 @@ class settings(customtkinter.CTkFrame):
             functiongenerator = self.master.hardwareframe.signalgenerator.get()
             scope_manufacturer = self.master.hardwareframe.scope_manufacturer.get()
             functiongenerator_manufacturer = self.master.hardwareframe.signalgenerator_manufacturer.get()
+            probe_1 = self.master.hardwareframe.probe_1.get()
+            probe_2 = self.master.hardwareframe.probe_2.get()
+
+            if probe_1 == "Probe":
+                print("No Attenuation given on Probe_1. Using 1")
+                self.master.hardwareframe.probe_1.set("1")
+                probe_1 = 1
+            if probe_2 == "Probe":
+                print("No Attenuation given on Probe_2. Using 1")
+                self.master.hardwareframe.probe_2.set("1")
+                probe_2 = 1
+            
+             
 
             if not scope:
                 print("No Scope ID given.")
-            if scope == functiongenerator:
+            if scope and scope == functiongenerator:
                 print("Scope and Functiongenerator ID are the same. Only opening Scope")
                 
             check = check_connection(scope_id=scope, functiongenerator_id=functiongenerator)
@@ -196,13 +212,15 @@ class settings(customtkinter.CTkFrame):
             parameter.append(scope_manufacturer)
             parameter.append(functiongenerator)
             parameter.append(functiongenerator_manufacturer)
+            parameter.append(probe_1)
+            parameter.append(probe_2)
             print(parameter)
 
 
 
         def stop():
-            self.start_button.configure(state="normal")
-            print("Stop button pressed")
+            #self.start_button.configure(state="normal")
+            self.master.terminalframe.progressbar.stop()
             #TODO: Implement stop functionality here
 
         self.check_button = customtkinter.CTkButton(self, text="Check", command=check)
@@ -212,12 +230,31 @@ class settings(customtkinter.CTkFrame):
         self.stop_button.grid(row=6, column=1, padx=10, pady=5)
 
         def start():
+            # self.start_button.configure(state="disabled")
+            # self.master.terminalframe.clear_button.invoke()
+            # print(parameter, flush=True)
+            # print("-----------Measuring-----------", flush=True)
+            # self.master.terminalframe.progressbar.start()
+            # results = query(parameter)
+            # self.master.terminalframe.progressbar.stop()
+            # self.master.outputframe.plot(results)
+            def measure():
+                print(parameter, flush=True)
+                print("-----------Measuring-----------", flush=True)
+                self.master.terminalframe.progressbar.start()
+                self.master.terminalframe.progressbar.set(0)
+
+                results = query(parameter)  # blockierende Messung
+
+                self.master.after(0, self.master.terminalframe.progressbar.stop)
+                self.master.after(0, lambda: self.master.outputframe.plot(results))
+                self.master.after(0, lambda: self.start_button.configure(state="normal"))
+
             self.start_button.configure(state="disabled")
             self.master.terminalframe.clear_button.invoke()
-            print(parameter, flush=True)
-            print("-----------Measuring-----------", flush=True)
-            results = query(parameter)
-            self.master.outputframe.plot(results) #TODO: plot
+            Thread(target=measure, daemon=True).start()#TODO: wieder auskommentieren
+            results=[]
+            self.master.outputframe.plot(results)
 
 
         self.start_button = customtkinter.CTkButton(self, text="Start", command=start)

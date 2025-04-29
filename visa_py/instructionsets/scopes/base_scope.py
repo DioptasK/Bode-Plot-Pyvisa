@@ -13,7 +13,7 @@ class BaseScope:
     def set_channel_units(self, channel: int, units: str):
         raise NotImplementedError
     
-    def set_channel_attentuation(self, channel: int, attentuation: int):
+    def set_channel_attenuation(self, channel: int, attenuation: int):
         raise NotImplementedError
     
     def set_channel_coupling(self, channel: int, coupling: str):
@@ -51,6 +51,15 @@ class BaseScope:
         raise NotImplementedError
 
     def measure(self):
+        raise NotImplementedError
+    
+    def measure_rms(self, channel: int):
+        raise NotImplementedError
+    
+    def measure_freq(self, channel: int):
+        raise NotImplementedError
+    
+    def measure_phase(self, channel1: int, channel2: int):
         raise NotImplementedError
     
 

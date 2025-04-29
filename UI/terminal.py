@@ -9,8 +9,9 @@ class terminal(customtkinter.CTkFrame):
 
         self.grid_columnconfigure(0, weight=1) 
         self.grid_columnconfigure(1, weight=0) 
-        self.grid_rowconfigure(0, weight=0) 
-        self.grid_rowconfigure(1, weight=0) 
+        self.grid_rowconfigure(0, weight=2) 
+        self.grid_rowconfigure(1, weight=2)
+        self.grid_rowconfigure(2, weight=0) 
         
         self.textbox = customtkinter.CTkTextbox(self)
         self.textbox.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
@@ -19,7 +20,7 @@ class terminal(customtkinter.CTkFrame):
         def clear():
             self.textbox.delete("0.0", "end")
 
-        #TODO: implement export to png anstatt csv
+
         def export_csv():
             with open("output.csv", "w") as file:
                 file.write(self.textbox.get("0.0", "end"))
@@ -32,6 +33,11 @@ class terminal(customtkinter.CTkFrame):
 
         self.export_csv_button = customtkinter.CTkButton(self, text="Export CSV", command=export_csv)
         self.export_csv_button.grid(row=1, column=1, padx=10, pady=5,sticky="nsew")
+
+        self.progressbar = customtkinter.CTkProgressBar(self,orientation="horizontal")
+        self.progressbar.grid(row=2, column = 0, columnspan= 2, padx=10,pady=5, sticky = "nsew")
+        self.progressbar.configure(mode="indeterminate")
+        self.progressbar.set(0)
 
         sys.stdout = self
 

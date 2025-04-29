@@ -2,7 +2,12 @@ from .base_functiongenerator import BaseFunctionGenerator
 
 class RigolFunctionGenerator(BaseFunctionGenerator):
 
-#TODO: noch falsche Befehle verwendet
+
+
+#Befehle noch komplett falsch
+
+
+
     def set_output(self, channel: int, output: str):
         self.inst.write(f":OUTPut{channel}:STATe {output}")
     

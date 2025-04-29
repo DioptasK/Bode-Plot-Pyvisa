@@ -6,7 +6,7 @@ class SiglentScope(BaseScope):
 #Channel commands
 
     def set_channel_output(self, channel: int, output: str):
-        self.inst.write(f":CHAN{channel}:SWITch {output}")#TODO: evtl auch :visible
+        self.inst.write(f":CHAN{channel}:SWITch {output}")
 
     def set_channel_vertical_scale(self, channel: int, volts_per_div: float):
         self.inst.write(f":CHANnel{channel}:SCALe {volts_per_div}")
@@ -14,8 +14,8 @@ class SiglentScope(BaseScope):
     def set_channel_units(self, channel: int, units: str):
         self.inst.write(f":CHANnel{channel}:UNIT {units}")
     
-    def set_channel_attentuation(self, channel: int, attentuation: int):
-        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attentuation}")
+    def set_channel_attenutaion(self, channel: int, attenuation: int):
+        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attenuation}")
     
     def set_channel_coupling(self, channel: int, coupling: str):
         self.inst.write(f":CHANnel{channel}:COUPling {coupling}")
@@ -89,7 +89,7 @@ class SiglentScope(BaseScope):
         self.inst.write(f":MEASure:ADVanced:P4:TYPE PHA")
         self.inst.write(f":MEASure:MODE ADVanced")
         self.inst.write(f":MEASure:ADVanced:STATistics ON")
-        self.inst.write(f":MEASure:ADVanced:STATistics: AIMLimit 10")
+        self.inst.write(f":MEASure:ADVanced:STATistics: AIMLimit 30")
 
     def measure(self):
         rms1 = float(self.inst.query(f":MEASure:ADVanced:P1:STATistics? MEAN"))
@@ -98,3 +98,16 @@ class SiglentScope(BaseScope):
         phase = float(self.inst.query(f":MEASure:ADVanced:P4:STATistics? MEAN"))
         return rms1, rms2, freq, phase
     
+
+    def measure_rms(self, channel: int):
+        if channel == 1:
+            return float(self.inst.query(f":MEASure:ADVanced:P1:STATistics? MEAN"))
+        elif channel == 2: 
+            return float(self.inst.query(f":MEASure:ADVanced:P2:STATistics? MEAN"))
+        else: raise RuntimeError("Only Channel 1 and 2 can be used for measurement")
+    
+    def measure_freq(self, channel: int):
+        float(self.inst.query(f":MEASure:ADVanced:P3:STATistics? MEAN"))
+    
+    def measure_phase(self, channel1: int, channel2: int):
+        phase = float(self.inst.query(f":MEASure:ADVanced:P4:STATistics? MEAN"))
