@@ -6,11 +6,10 @@ A modern GUI application for communicating with measurement instruments such as 
 
 ## 🔧 Features
 
-- **Device Auto-Detection** – finds and configures connected VISA devices.
-- **Live Data Display** – visual representation of measurement results.
+- **Device Detection** – finds and configures connected VISA devices.
+- **Data Plot in Display** – visual representation of measurement results.
 - **Settings Management** – GUI for user preferences and application settings.
 - **Integrated Terminal** – embedded console output.
-- **Safe Thread Handling** – ensures all background threads are properly stopped before exit.
 
 ---
 
@@ -110,6 +109,5 @@ python3 main.py [-options]
 
 - **PyVISA** – for enabling communication with instruments
 - **CustomTkinter** – for a modern, themable Python GUI
-- **Device guides** – see `Programmingguides/` for protocol references
 
 ---

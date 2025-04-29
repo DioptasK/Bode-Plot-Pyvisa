@@ -23,17 +23,17 @@ class settings(customtkinter.CTkFrame):
         self.grid_rowconfigure(5, weight=1)
         self.grid_rowconfigure(6, weight=1)
 
-        self.default_startfrequenzy = tk.StringVar(value="10")
-        self.startfrequenzy = customtkinter.CTkEntry(self, textvariable=self.default_startfrequenzy)
-        self.startfrequenzy.grid(row=1,column=0,padx=10, pady=5)
-        self.startfrequenzy_label = customtkinter.CTkLabel(self, text="Startfrequenz [Hz]", font=("Arial", -16))
-        self.startfrequenzy_label.grid(row=0, column=0, padx=10, pady=5)
+        self.default_startfrequency = tk.StringVar(value="10")
+        self.startfrequency = customtkinter.CTkEntry(self, textvariable=self.default_startfrequency)
+        self.startfrequency.grid(row=1,column=0,padx=10, pady=5)
+        self.startfrequency_label = customtkinter.CTkLabel(self, text="Startfrequenz [Hz]", font=("Arial", -16))
+        self.startfrequency_label.grid(row=0, column=0, padx=10, pady=5)
 
-        self.default_stopfrequenzy = tk.StringVar(value="1000")
-        self.stopfrequenzy = customtkinter.CTkEntry(self, textvariable=self.default_stopfrequenzy)
-        self.stopfrequenzy.grid(row=1,column=1,padx=10, pady=5)
-        self.stopfrequenzy_label = customtkinter.CTkLabel(self, text="Stopfrequenz [Hz]", font=("Arial", -16))
-        self.stopfrequenzy_label.grid(row=0, column=1, padx=10, pady=5)
+        self.default_stopfrequency = tk.StringVar(value="1000")
+        self.stopfrequency = customtkinter.CTkEntry(self, textvariable=self.default_stopfrequency)
+        self.stopfrequency.grid(row=1,column=1,padx=10, pady=5)
+        self.stopfrequency_label = customtkinter.CTkLabel(self, text="Stopfrequenz [Hz]", font=("Arial", -16))
+        self.stopfrequency_label.grid(row=0, column=1, padx=10, pady=5)
 
         self.default_amplitude = tk.StringVar(value="3")
         self.amplitude = customtkinter.CTkEntry(self,textvariable=self.default_amplitude)
@@ -65,8 +65,8 @@ class settings(customtkinter.CTkFrame):
             self.master.terminalframe.clear_button.invoke()
             self.start_button.configure(state="disabled")
 
-            startfrequenzy = 0
-            stopfrequenzy = 0
+            startfrequency = 0
+            stopfrequency = 0
             amplitude = 0
             sweeptype = ""
             samples = 0
@@ -78,26 +78,26 @@ class settings(customtkinter.CTkFrame):
             startfreqcheck, stopfreqcheck, amplitudecheck, samplescheck, sampleratecheck, scopeidcheck, signalgeneratoridcheck = False, False, False, False, False, False, False
 
             try:
-                startfrequenzy = int(self.startfrequenzy.get())
-                if startfrequenzy < 1:
+                startfrequency = int(self.startfrequency.get())
+                if startfrequency < 1:
                     print ("Start frequency must be a positive integer.")
                     raise ValueError("Start frequency must be a positive integer.")
-                print(f"Startfrequenzy: {startfrequenzy} Hz")
+                print(f"Startfrequency: {startfrequency} Hz")
                 startfreqcheck = True
             except ValueError:
                 print("Invalid input for start frequency.")
                 
 
             try:
-                stopfrequenzy = int(self.stopfrequenzy.get())
-                if stopfrequenzy < 0:
+                stopfrequency = int(self.stopfrequency.get())
+                if stopfrequency < 0:
                     raise ValueError("Stop frequency must be a positive integer.")
-                if stopfrequenzy <= startfrequenzy:
-                    startfrequenzy = 10
+                if stopfrequency <= startfrequency:
+                    startfrequency = 10
                     raise ValueError("Stop frequency must be greater than start frequency.")
-                if stopfrequenzy > 1000000000:
+                if stopfrequency > 1000000000:
                     raise ValueError("Stop frequency must be less than 1 GHz.")
-                print(f"Stopfrequenzy: {stopfrequenzy} Hz")
+                print(f"Stopfrequency: {stopfrequency} Hz")
                 stopfreqcheck = True
             except ValueError as e:
                 print(e)
@@ -200,8 +200,8 @@ class settings(customtkinter.CTkFrame):
                 print("Eventuel Samplerate oder Samples anpassen\n")
             print("Drücke Start um Messung zu starten...")
              
-            parameter.append(startfrequenzy)
-            parameter.append(stopfrequenzy)
+            parameter.append(startfrequency)
+            parameter.append(stopfrequency)
             parameter.append(amplitude)
             parameter.append(sweeptype)
             parameter.append(samples)

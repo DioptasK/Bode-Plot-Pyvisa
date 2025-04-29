@@ -89,8 +89,8 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
 
 def query(parameter):
     scope_is_functiongenerator = False
-    startfrequenzy =  parameter[0]
-    stopfrequenzy = parameter[1]
+    startfrequency =  parameter[0]
+    stopfrequency = parameter[1]
     pkpk = parameter[2]
     sweeptype = parameter[3]
     samples = parameter[4]
@@ -119,7 +119,7 @@ def query(parameter):
 
         if(scopeid == functiongeneratorid or not functiongeneratorid):
             print("Using Scope as functiongenerator")
-            scope_setup(scope, True, pkpk,startfrequenzy,probe_1,probe_2)
+            scope_setup(scope, True, pkpk,startfrequency,probe_1,probe_2)
             scope_is_functiongenerator = True
         else:
             functiongenerator = rm.open_resource(functiongeneratorid)
@@ -129,19 +129,19 @@ def query(parameter):
                 functiongenerator = KeysightFunctionGenerator(functiongenerator)
             elif(functiongenerator_manufacturer == "Rigol"):
                 functiongenerator = RigolFunctionGenerator(functiongenerator)
-            scope_setup(scope, False, pkpk, startfrequenzy,probe_1,probe_2)
-            functiongenerator_setup(functiongenerator, startfrequenzy, pkpk)            
+            scope_setup(scope, False, pkpk, startfrequency,probe_1,probe_2)
+            functiongenerator_setup(functiongenerator, startfrequency, pkpk)            
 
-        print("Samples        RMS 1      RMS 2       Frequenzy       Phase")
+        print("Samples        RMS 1      RMS 2       Frequency       Phase")
         print("-------------------------------------------------------------------------------")
         results = []
         samples_done = 0
 
-        x_points = np.logspace(np.log10(startfrequenzy),np.log10(stopfrequenzy),samples)
+        x_points = np.logspace(np.log10(startfrequency),np.log10(stopfrequency),samples)
 
         for i in range(samples):
             if sweeptype == "lin":
-                frequency = startfrequenzy + i*((stopfrequenzy - startfrequenzy) / samples)
+                frequency = startfrequency + i*((stopfrequency - startfrequency) / samples)
             elif sweeptype == "exp":
                 frequency = x_points[i]
 
@@ -155,7 +155,7 @@ def query(parameter):
             if scope_is_functiongenerator: 
                 scope.set_frequency(frequency)
             else:
-                functiongenerator.set_frequenzy(frequency)
+                functiongenerator.set_frequency(frequency)
             x_axis_scaling(scope, frequency)
             #y_axis_scaling(scope, pkpk)
             time.sleep((1 / samplerate))

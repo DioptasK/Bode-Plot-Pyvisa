@@ -14,12 +14,12 @@ parser.add_argument('-u', action='store_true', help='Flag to indicate if the UI 
 parser.add_argument('-startfrequency', type=int, default=10, help='Startfrequency in Hz (Default: 10Hz)')
 parser.add_argument('-stopfrequency', type=int, default=100000, help='Stopfrequency in Hz (Default: 100kHz)')
 parser.add_argument('-amplitude', type=float, default=2, help='Amplitude in Vpp (Default: 3Vpp)')
-parser.add_argument('-sweeptype', type=str, default='log', help='Type of frequency progression (Default: lin) (Options: lin, exp)')
+parser.add_argument('-sweeptype', type=str, default='lin', help='Type of frequency progression (Default: lin) (Options: lin, exp)')
 parser.add_argument('-samples', type=int, default=1000, help='Number of samples (Default: 1000)')
 parser.add_argument('-samplerate', type=float, default=0.5, help='Number of measurements per second (Default: 0.5/s)')
 parser.add_argument('-scope_manufacturer', type=str, default="Siglent", help='Manufacturere of the Scope (Default: Siglent)')
-parser.add_argument('-probe_1', type=int, default=0.5, help='Attenuation of Channel_1 (Default: 10)')
-parser.add_argument('-probe_2', type=int, default=0.5, help='Attenuation of Channel_2 (Default: 10)')
+parser.add_argument('-probe_1', type=int, default=10, help='Attenuation of Channel_1 (Default: 10)')
+parser.add_argument('-probe_2', type=int, default=10, help='Attenuation of Channel_2 (Default: 10)')
 parser.add_argument('-scope_id', type=str, default="", help='Visa ID of the scope')
 parser.add_argument('-functiongenerator_manufacturer', type=str, default="Siglent", help='Manufacturer of the signalgenerator (Default: Siglent)')
 parser.add_argument('-functiongenerator_id', type=str, default="", help='Visa ID of the functiongenerator')
@@ -144,11 +144,11 @@ def check(input):#TODO: Funktionalität noch prüfen
     else:
         print("Connection failed. Please check device IDs.")
 
-    if not (input[7] == "Agilent" or input[7] == "Siglent" or input[7] == "Rigol"):
+    if not (input[7] == "Agilent" or input[7] == "Siglent" or input[7] == "Rigol" or input[7] == "Agilent"):
         print("Scopemanufacturer not supported")
         return False
     
-    if not (input[9] == "Agilent" or input[9] == "Siglent" or input[9] == "Rigol"):
+    if not (input[9] == "Agilent" or input[9] == "Siglent" or input[9] == "Rigol"or input[7] == "Agilent"):
         print("Signalgeneratormanufacturer not supported")
         return False
 
@@ -162,19 +162,19 @@ def check(input):#TODO: Funktionalität noch prüfen
     print(f"Measurement time: {measurement_time} seconds")
     if measurement_time > 3600:
         print("Warning: Measurement time exceeds 1 hour.")
-        print("Eventuel Samplerate oder Samples anpassen\n")
+        print("Consider adjusting the samplerate or samples.\n")
     elif measurement_time > 1800:
         print("Warning: Measurement time exceeds 30 minutes.")
-        print("Eventuel Samplerate oder Samples anpassen\n")
+        print("Consider adjusting the samplerate or samples.\n")
     elif measurement_time > 900:
         print("Warning: Measurement time exceeds 15 minutes.")
-        print("Eventuel Samplerate oder Samples anpassen\n")
+        print("Consider adjusting the samplerate or samples.\n")
     elif measurement_time > 600:
         print("Warning: Measurement time exceeds 10 minutes.")
-        print("Eventuel Samplerate oder Samples anpassen\n")
+        print("Consider adjusting the samplerate or samples.\n")
     elif measurement_time > 300:
         print("Warning: Measurement time exceeds 5 minutes.")
-        print("Eventuel Samplerate oder Samples anpassen\n")
+        print("Consider adjusting the samplerate or samples.\n")
 
     return True
 
