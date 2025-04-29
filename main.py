@@ -3,6 +3,9 @@ import argparse
 from UI.mainframe import mainframe
 from UI.plot_only import plot
 from visa_py import resources
+import numpy as np
+import os
+from datetime import datetime
 
 parser = argparse.ArgumentParser(description='Bodeplot-Messprogramm')
 
@@ -23,10 +26,18 @@ parser.add_argument('-functiongenerator_id', type=str, default="", help='Visa ID
 
 args = parser.parse_args()
 
-def export_csv(input):
-    print("Test")
+def export_csv(input, parameters):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"bodeplot_{parameters[0]}Hz_{parameters[1]}Hz_{parameters[2]}Vpp_{parameters[3]}_{parameters[4]}samples_{timestamp}.csv"
+    filepath = os.path.join(os.getcwd(), filename)
 
-def check(input):#TODO: Funktionalität noch anpassen
+    try:
+        np.savetxt(filepath, input, delimiter=",", header="RMS_1,RMS_2,Frequency,Phase", comments="")
+        print(f"Data successfully exported to {filepath}")
+    except Exception as e:
+        print(f"Failed to export data: {e}")
+
+def check(input):#TODO: Funktionalität noch prüfen
     startfrequenzy = 0
     stopfrequenzy = 0
     amplitude = 0
@@ -192,4 +203,4 @@ else:
         result = resources.query(parameters)
         plot(result)
         if args.c:
-            export_csv(result)
+            export_csv(result, parameters)
