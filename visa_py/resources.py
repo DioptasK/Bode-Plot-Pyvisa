@@ -88,6 +88,8 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
 
 
 def query(parameter):
+
+
     scope_is_functiongenerator = False
     startfrequency =  parameter[0]
     stopfrequency = parameter[1]
@@ -130,7 +132,10 @@ def query(parameter):
             elif(functiongenerator_manufacturer == "Rigol"):
                 functiongenerator = RigolFunctionGenerator(functiongenerator)
             scope_setup(scope, False, pkpk, startfrequency,probe_1,probe_2)
-            functiongenerator_setup(functiongenerator, startfrequency, pkpk)            
+            functiongenerator_setup(functiongenerator, startfrequency, pkpk)   
+
+        print(parameter, flush=True)
+        print("-----------Measuring-----------", flush=True)         
 
         print("Samples        RMS 1      RMS 2       Frequency       Phase")
         print("-------------------------------------------------------------------------------")

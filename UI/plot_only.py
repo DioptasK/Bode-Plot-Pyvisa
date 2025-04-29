@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.widgets import Cursor
 
 def plot(results):
     # Optional: Beispiel-Daten für Tests
@@ -19,7 +20,7 @@ def plot(results):
 
     # Linke y-Achse: Betrag |H(f)| in dB
     magnitude = 20 * np.log10(rms2 / rms1)
-    ax1.plot(frequencies, magnitude, 'b-', label="|H(f)|")
+    line1, = ax1.plot(frequencies, magnitude, 'b-', label="|H(f)|")
     ax1.set_xscale('log')
     ax1.set_xlabel("f (Hz)")
     ax1.set_ylabel("|H(f)| / dB", color='b')
@@ -28,10 +29,13 @@ def plot(results):
 
     # Rechte y-Achse: Phase
     ax2 = ax1.twinx()
-    ax2.plot(frequencies, phase, 'r-', label="φ(f)")
+    line2, = ax2.plot(frequencies, phase, 'r-', label="φ(f)")
     ax2.set_ylim(-180, 180)
     ax2.set_ylabel("φ(f) / deg", color='r')
     ax2.tick_params(axis='y', labelcolor='r')
+
+    # Cursor-Funktionalität hinzufügen
+    cursor = Cursor(ax1, useblit=True, color='green', linewidth=1)
 
     fig.tight_layout()
     plt.show()
