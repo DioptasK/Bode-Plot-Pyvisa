@@ -1,10 +1,10 @@
 import customtkinter
-
-import terminal
-import output
-import device_input
-import settings
 import threading
+
+from UI import terminal
+from UI import output
+from UI import device_input
+from UI import settings
 
 customtkinter.set_appearance_mode("light")  # Set dark mode
 customtkinter.set_default_color_theme("green")  # Set color theme
@@ -54,6 +54,6 @@ class mainframe(customtkinter.CTk):
         exit(0)  # Beendet den Python-Prozess
 
 
-if __name__ == "__main__":
-    app = mainframe()
-    app.mainloop()
+# if __name__ == "__main__":
+#     app = mainframe()
+#     app.mainloop()

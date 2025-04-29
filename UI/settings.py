@@ -1,11 +1,9 @@
-import time
 import customtkinter
 import tkinter as tk
-
 from threading import Thread
 
 from visa_py.resources import check_connection, query
-import output
+from UI import output
 
 
 
@@ -252,7 +250,7 @@ class settings(customtkinter.CTkFrame):
 
             self.start_button.configure(state="disabled")
             self.master.terminalframe.clear_button.invoke()
-            Thread(target=measure, daemon=True).start()#TODO: wieder auskommentieren
+            Thread(target=measure, daemon=True).start()
             results=[]
             self.master.outputframe.plot(results)
 
@@ -263,3 +261,7 @@ class settings(customtkinter.CTkFrame):
         self.start_button.configure(state="disabled")
 
         
+
+
+
+
