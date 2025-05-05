@@ -2,7 +2,7 @@ from .base_functiongenerator import BaseFunctionGenerator
 
 class SiglentFunctionGenerator(BaseFunctionGenerator):
 
-    #Befehle noch nicht überprüft #TODO: noch überprüfen 
+   #TODO: to check
     def set_output(self, channel: int, output: str):
         self.inst.write(f":OUTPut{channel}:STATe {output}")
     

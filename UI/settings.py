@@ -1,6 +1,6 @@
 import customtkinter
 import tkinter as tk
-from threading import Thread
+from threading import Thread, Event
 
 from visa_py.resources import check_connection, query
 from visa_py.inputs_check import check
@@ -12,10 +12,12 @@ class settings(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        self.stop_event = Event()
+
         parameter = []
 
-        self.grid_columnconfigure(0, weight=1)  # Textbox-Spalte
-        self.grid_columnconfigure(1, weight=1)  # Button-Spalte (fix)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1) 
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
@@ -27,13 +29,13 @@ class settings(customtkinter.CTkFrame):
         self.default_startfrequency = tk.StringVar(value="10")
         self.startfrequency = customtkinter.CTkEntry(self, textvariable=self.default_startfrequency)
         self.startfrequency.grid(row=1,column=0,padx=10, pady=5)
-        self.startfrequency_label = customtkinter.CTkLabel(self, text="Startfrequenz [Hz]", font=("Arial", -16))
+        self.startfrequency_label = customtkinter.CTkLabel(self, text="Startfrequency [Hz]", font=("Arial", -16))
         self.startfrequency_label.grid(row=0, column=0, padx=10, pady=5)
 
         self.default_stopfrequency = tk.StringVar(value="1000")
         self.stopfrequency = customtkinter.CTkEntry(self, textvariable=self.default_stopfrequency)
         self.stopfrequency.grid(row=1,column=1,padx=10, pady=5)
-        self.stopfrequency_label = customtkinter.CTkLabel(self, text="Stopfrequenz [Hz]", font=("Arial", -16))
+        self.stopfrequency_label = customtkinter.CTkLabel(self, text="Stopfrequency [Hz]", font=("Arial", -16))
         self.stopfrequency_label.grid(row=0, column=1, padx=10, pady=5)
 
         self.default_amplitude = tk.StringVar(value="3")
@@ -60,22 +62,25 @@ class settings(customtkinter.CTkFrame):
         self.samplerate_label.grid(row=4, column=1, padx=10, pady=5)
 
         def stop():
-            #self.start_button.configure(state="normal")
+            self.stop_event.set()
             self.master.terminalframe.progressbar.stop()
-            #TODO: Implement stop functionality here
+            self.start_button.configure(state="normal")
+            print("Measurement stopped")
 
         self.stop_button = customtkinter.CTkButton(self, text="Stop", command=stop)
         self.stop_button.grid(row=6, column=1, padx=10, pady=5)
 
         def start():
+            self.stop_event.clear()
             def measure():
                 self.master.terminalframe.progressbar.start()
                 self.master.terminalframe.progressbar.set(0)
 
-                results = query(parameter)  # blockierende Messung
+                results = query(parameter, self.stop_event)
+                self.master.results_for_export = results
 
                 self.master.after(0, self.master.terminalframe.progressbar.stop)
-                self.master.after(0, lambda: plot(results))
+                self.master.after(0, lambda: Thread(target=plot, args=(results,), daemon=True).start())
                 self.master.after(0, lambda: self.start_button.configure(state="normal"))
                 self.master.after(0, lambda: self.master.terminalframe.export_csv_button.configure(state="normal"))
 
@@ -118,7 +123,8 @@ class settings(customtkinter.CTkFrame):
             parameter.append(functiongenerator_manufacturer)
             parameter.append(probe_1)
             parameter.append(probe_2)
-            check(parameter)
+            if check(parameter):
+                self.master.parameters = parameter
 
         self.check_button = customtkinter.CTkButton(self, text="Check", command=check_params)
         self.check_button.grid(row=6, column=0, padx=10, pady=5)

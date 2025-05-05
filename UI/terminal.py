@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 import os
 
+from outputs.export_output import export_csv
 
 class terminal(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -22,14 +23,8 @@ class terminal(customtkinter.CTkFrame):
 
 
         def export():
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"bodeplot__{timestamp}.csv"
-            filepath = os.path.join(os.getcwd(), filename)
-            with open(filepath, "x") as file:
-                file.write(self.textbox.get("0.0", "end"))
-                file.close()
-            self.textbox.insert("end", "Exported CSV to {filename}\n")
-            self.textbox.see("end")
+            export_csv(self.master.results_for_export, self.master.parameters)
+                
 
         self.clear_button = customtkinter.CTkButton(self, text="Clear", command=clear)
         self.clear_button.grid(row=1, column=0, padx=10, pady=5,sticky="nsew")

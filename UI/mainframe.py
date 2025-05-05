@@ -1,6 +1,8 @@
 import customtkinter
 import threading
 
+import numpy as np
+
 from UI import terminal
 from UI import device_input
 from UI import settings
@@ -21,6 +23,9 @@ class mainframe(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=3)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=2)
+
+        self.results_for_export = np.array([])
+        self.parameters = []
  
         self.terminalframe = terminal.terminal(self)
         self.terminalframe.grid(row=0, column=1, padx=10, pady=5, sticky="nsew")

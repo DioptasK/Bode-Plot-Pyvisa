@@ -2,6 +2,8 @@ import pyvisa
 import time
 import numpy as np
 
+from threading import Event
+
 from visa_py.instructionsets.functiongenerators.siglent_functiongenerator import SiglentFunctionGenerator
 from visa_py.instructionsets.functiongenerators.rigol_functiongenerator import RigolFunctionGenerator
 from visa_py.instructionsets.functiongenerators.keysight_functiongenerator import KeysightFunctionGenerator
@@ -50,7 +52,7 @@ def x_axis_scaling(scope, freq):
     
 
 def y_axis_scaling(scope, pkpk):
-    #scope.set_channel_vertical_scale(2, pkpk)#TODO: Hier die richtige vorgehensweise implementieren
+    #scope.set_channel_vertical_scale(2, pkpk)#TODO: still to be implemented
     print("y_axis_scaling not implemented yet")
 
 def functiongenerator_setup(functiongenerator, frequency, pkpk):
@@ -73,6 +75,8 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
     scope.set_channel_label(2, "OUTPUT")
     scope.set_channel_coupling(1, "AC")
     scope.set_channel_coupling(2, "AC")
+    scope.set_channel_bwlimit(1, "ON")
+    scope.set_channel_bwlimit(2, "ON")
     #scope.set_channel_vertical_scale(1, pkpk/9)
     scope.measure_bode_setup(1, 2)
 
@@ -87,7 +91,7 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
 
 
 
-def query(parameter):
+def query(parameter, stop_event):
 
 
     scope_is_functiongenerator = False
@@ -142,20 +146,23 @@ def query(parameter):
         results = []
         samples_to_do = samples
 
-        x_points = np.logspace(np.log10(startfrequency),np.log10(stopfrequency),samples)
+        if sweeptype == "lin":
+            x_points = np.linspace(startfrequency, stopfrequency, samples)
+            #x_points = startfrequency + i*((stopfrequency - startfrequency) / samples)
+        elif sweeptype == "exp":
+            x_points = np.logspace(np.log10(startfrequency),np.log10(stopfrequency),samples)
 
         for i in range(samples):
-            if sweeptype == "lin":
-                frequency = startfrequency + i*((stopfrequency - startfrequency) / samples)
-            elif sweeptype == "exp":
-                frequency = x_points[i]
 
-            if frequency < 20000000:
-                scope.set_channel_bwlimit(1, "ON")
-                scope.set_channel_bwlimit(2, "ON")
-            else:
+            if stop_event.is_set():
+                break
+
+            frequency = x_points[i]
+
+            if frequency > 20000000:
                 scope.set_channel_bwlimit(1, "OFF")
                 scope.set_channel_bwlimit(2, "OFF")
+                
 
             if scope_is_functiongenerator: 
                 scope.set_frequency(frequency)

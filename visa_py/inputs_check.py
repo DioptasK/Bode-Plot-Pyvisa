@@ -1,6 +1,6 @@
 from visa_py.resources import check_connection
 
-def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
+def check(input):#TODO: test functionality  #TODO: Load yaml files
     startfrequenzy = 0
     stopfrequenzy = 0
     amplitude = 0

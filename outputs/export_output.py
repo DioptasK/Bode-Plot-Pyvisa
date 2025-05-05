@@ -10,8 +10,10 @@ def export_csv(input, parameters):
     try:
         np.savetxt(filepath, input, delimiter=",", header="RMS_1,RMS_2,Frequency,Phase", comments="")
         print(f"Data successfully exported to {filepath}")
+        return True
     except Exception as e:
         print(f"Failed to export data: {e}")
+        return False
 
 
 if __name__ == "__main__":
