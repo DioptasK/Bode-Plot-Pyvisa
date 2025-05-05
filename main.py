@@ -13,7 +13,7 @@ parser.add_argument('-c', action='store_true', help='Flag to indicate if the out
 parser.add_argument('-u', action='store_true', help='Flag to indicate if the UI should be used')
 parser.add_argument('-startfrequency', type=int, default=10, help='Startfrequency in Hz (Default: 10Hz)')
 parser.add_argument('-stopfrequency', type=int, default=100000, help='Stopfrequency in Hz (Default: 100kHz)')
-parser.add_argument('-amplitude', type=float, default=2, help='Amplitude in Vpp (Default: 3Vpp)')
+parser.add_argument('-pkpk', type=float, default=2, help='Amplitude in Vpp (Default: 3Vpp)')
 parser.add_argument('-sweeptype', type=str, default='lin', help='Type of frequency progression (Default: lin) (Options: lin, exp)')
 parser.add_argument('-samples', type=int, default=1000, help='Number of samples (Default: 1000)')
 parser.add_argument('-samplerate', type=float, default=0.5, help='Number of measurements per second (Default: 0.5/s)')
@@ -38,7 +38,7 @@ else:
     parameters = []
     parameters.append(args.startfrequency)
     parameters.append(args.stopfrequency)
-    parameters.append(args.amplitude)
+    parameters.append(args.pkpk)
     parameters.append(args.sweeptype)
     parameters.append(args.samples)
     parameters.append(args.samplerate)
@@ -54,3 +54,5 @@ else:
         plot(result)
         if args.c:
             export_csv(result, parameters)
+    else: 
+        print("Parameter error")

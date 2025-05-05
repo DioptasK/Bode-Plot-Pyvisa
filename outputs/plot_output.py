@@ -45,3 +45,6 @@ if __name__ == "__main__":
         erg.append(result)
     results = np.array(erg)
     plot(results)
+
+
+    

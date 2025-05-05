@@ -22,6 +22,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
         startfreqcheck = True
     except ValueError:
         print("Invalid input for start frequency.")
+        return False
         
 
     try:
@@ -38,6 +39,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
     except ValueError as e:
         print(e)
         print("Invalid input for stop frequency.")
+        return False
         
 
     try:
@@ -52,6 +54,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
         amplitudecheck = True
     except ValueError:
         print("Invalid input for amplitude.")
+        return False
 
     sweeptype = input[3]
     if sweeptype == "lin" or sweeptype == "exp":
@@ -81,6 +84,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
         samplescheck = True
     except ValueError:
         print("Invalid input for samples.")
+        return False
 
 
     try:
@@ -92,6 +96,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
         sampleratecheck = True
     except ValueError:
         print("Invalid input for samplerate.")
+        return False
     
     if not input[6]:
         print("No Scope ID given.")
@@ -108,6 +113,7 @@ def check(input):#TODO: Funktionalität noch prüfen #TODO: Lade yaml files
         signalgeneratoridcheck = True
     else:
         print("Connection failed. Please check device IDs.")
+        return False
 
     if not (input[7] == "Agilent" or input[7] == "Siglent" or input[7] == "Rigol" or input[7] == "Agilent"):
         print("Scopemanufacturer not supported")

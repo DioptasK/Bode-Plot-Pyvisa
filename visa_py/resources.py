@@ -140,7 +140,7 @@ def query(parameter):
         print("Samples        RMS 1      RMS 2       Frequency       Phase")
         print("-------------------------------------------------------------------------------")
         results = []
-        samples_done = 0
+        samples_to_do = samples
 
         x_points = np.logspace(np.log10(startfrequency),np.log10(stopfrequency),samples)
 
@@ -173,9 +173,9 @@ def query(parameter):
             result[2] = freq
             phase = scope.measure_phase(1,2)
             result[3] = phase
-            print(samples_done,",",result[0], ",", result[1], ",", result[2], ",", result[3], flush=True)
+            print(samples_to_do,",",rms1, ",", rms2, ",", freq, ",", phase, flush=True)
             results.append(result)
-            samples_done += 1
+            samples_to_do -= 1
 
         results_array = np.array(results)
         return results_array
