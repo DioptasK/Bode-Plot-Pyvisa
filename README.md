@@ -1,6 +1,6 @@
 # PyVISA GUI Application
 
-A modern GUI application for communicating with measurement instruments such as oscilloscopes and function generators — built with Python, [PyVISA](https://pyvisa.readthedocs.io/), and `customtkinter`.
+A modern GUI application for communicating with measurement instruments such as oscilloscopes and function generators — built with Python, [PyVISA](https://pyvisa.readthedocs.io/), and [customtkinter](https://customtkinter.tomschimansky.com/).
 
 ---
 
