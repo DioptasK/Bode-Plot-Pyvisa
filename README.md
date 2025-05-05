@@ -51,6 +51,8 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/DioptasK/Bode-Plot-Pyvisa.git
+```
+```bash
 cd Bode-Plot-Pyvisa
 ```
 
@@ -58,6 +60,8 @@ Set up a virtual environment:
 
 ```bash
 python -m venv ven
+```
+```bash
 source ven/bin/activate  # On Windows: ven\Scripts\activate
 ```
 
@@ -92,7 +96,6 @@ python3 main.py [-options]
 - **Hardware Tab**: Connect and configure VISA devices.
 - **Output Tab**: View measurement results.
 - **Settings Tab**: Adjust application behavior and appearance.
-- **Exit**: Application ensures all threads are cleanly terminated.
 
 ---
 
@@ -105,7 +108,7 @@ python3 main.py [-options]
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **PyVISA** – for enabling communication with instruments
 - **CustomTkinter** – for a modern, themable Python GUI
