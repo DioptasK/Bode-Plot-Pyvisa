@@ -1,6 +1,7 @@
 import customtkinter
 import sys
-
+from datetime import datetime
+import os
 
 
 class terminal(customtkinter.CTkFrame):
@@ -8,31 +9,34 @@ class terminal(customtkinter.CTkFrame):
         super().__init__(master)
 
         self.grid_columnconfigure(0, weight=1) 
-        self.grid_columnconfigure(1, weight=0) 
-        self.grid_rowconfigure(0, weight=2) 
-        self.grid_rowconfigure(1, weight=2)
-        self.grid_rowconfigure(2, weight=0) 
+        self.grid_columnconfigure(1, weight=1) 
+        self.grid_rowconfigure(0, weight=10) 
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=0)  
         
         self.textbox = customtkinter.CTkTextbox(self)
-        self.textbox.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
-        self.textbox.grid(rowspan=2)
+        self.textbox.grid(row=0, column=0, columnspan = 2, padx=10, pady=5, sticky="nsew")
 
         def clear():
             self.textbox.delete("0.0", "end")
 
 
-        def export_csv():
-            with open("output.csv", "w") as file:
+        def export():
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"bodeplot__{timestamp}.csv"
+            filepath = os.path.join(os.getcwd(), filename)
+            with open(filepath, "x") as file:
                 file.write(self.textbox.get("0.0", "end"))
                 file.close()
-            self.textbox.insert("end", "Data exported to output.csv\n")
+            self.textbox.insert("end", "Exported CSV to {filename}\n")
             self.textbox.see("end")
 
         self.clear_button = customtkinter.CTkButton(self, text="Clear", command=clear)
-        self.clear_button.grid(row=0, column=1, padx=10, pady=5,sticky="nsew")
+        self.clear_button.grid(row=1, column=0, padx=10, pady=5,sticky="nsew")
 
-        self.export_csv_button = customtkinter.CTkButton(self, text="Export CSV", command=export_csv)
+        self.export_csv_button = customtkinter.CTkButton(self, text="Export CSV", command=export)
         self.export_csv_button.grid(row=1, column=1, padx=10, pady=5,sticky="nsew")
+        self.export_csv_button.configure(state = "disabled")
 
         self.progressbar = customtkinter.CTkProgressBar(self,orientation="horizontal")
         self.progressbar.grid(row=2, column = 0, columnspan= 2, padx=10,pady=5, sticky = "nsew")

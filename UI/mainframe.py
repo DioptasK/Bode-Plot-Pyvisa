@@ -2,7 +2,6 @@ import customtkinter
 import threading
 
 from UI import terminal
-from UI import output
 from UI import device_input
 from UI import settings
 
@@ -19,24 +18,19 @@ class mainframe(customtkinter.CTk):
 
         # Configure grid layout
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=10)
+        self.grid_columnconfigure(1, weight=3)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=2)
-        self.grid_rowconfigure(2, weight=1)
  
+        self.terminalframe = terminal.terminal(self)
+        self.terminalframe.grid(row=0, column=1, padx=10, pady=5, sticky="nsew")
+        self.terminalframe.grid(rowspan=2)
+
         self.hardwareframe = device_input.device_input(self)
         self.hardwareframe.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
-        
-        self.outputframe = output.output(self)
-        self.outputframe.grid(row=0, column=1, padx=10, pady=5, sticky="nsew")
-        self.outputframe.grid(rowspan=2)
 
         self.settingframe = settings.settings(self)
         self.settingframe.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
-  
-        self.terminalframe = terminal.terminal(self)
-        self.terminalframe.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
-        self.terminalframe.grid(columnspan=2)
 
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
     
