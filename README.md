@@ -18,15 +18,14 @@ A modern GUI application for communicating with measurement instruments such as 
 ```
 pyvisa/
 ├── main.py                  # Entry point of the application
+├── requirements.txt         # 
 ├── UI/                      # GUI components (customtkinter)
 │   ├── device_input.py      # Hardware configuration
 │   ├── mainframe.py         # Main window
-│   ├── output.py            # Data visualization
-|   ├── plot_only.py         # Data visualization
-│   ├── settings.py          # Application settings
+│   ├── settings.py          # Measurement settings
 │   └── terminal.py          # Terminal output
 ├── visa_py/                 # PyVISA-related modules
-│   ├── __init__.py
+│   ├── inputs_check.py      # Input validation
 │   ├── resources.py         # Resource management
 │   ├── devices/             # Device-specific configurations (YAML)
 │   │   ├── agilent_keysight.yaml
@@ -34,12 +33,14 @@ pyvisa/
 │   │   └── siglent.yaml
 │   └── instructionsets/     # Command sets for instruments
 │       ├── functiongenerators/
-|       |   ├── base_functiongenerator.py
+│       |   ├── base_functiongenerator.py
 │       |   └── ...
 │       └── scopes/
 │           ├── base_scope.py
 │           └── ...
-├── ven/                     # Virtual environment (optional, excluded from version control)
+├── outputs/                 # Data outputs and exports
+│   ├── export_output.py     # Export data to files
+│   └── plot_output.py       # Plot the data
 └── Programmingguides/       # Manufacturer documentation for devices
 ```
 
@@ -71,8 +72,6 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-> Make sure you have a VISA backend installed (e.g., NI-VISA or `pyvisa-py`).
-
 ---
 
 ## ▶️ Usage
@@ -93,9 +92,8 @@ python3 main.py [-options]
 
 ## 🧩 Functional Overview
 
-- **Hardware Tab**: Connect and configure VISA devices.
-- **Output Tab**: View measurement results.
-- **Settings Tab**: Adjust application behavior and appearance.
+- **Hardware**: Connect and configure VISA devices.
+- **Settings**: Adjust application behavior.
 
 ---
 
@@ -112,5 +110,26 @@ python3 main.py [-options]
 
 - **PyVISA** – for enabling communication with instruments
 - **CustomTkinter** – for a modern, themable Python GUI
+
+---
+
+## License
+
+Copyright (c) 2025 Bode-Plot-Pyvisa
+
+This software is provided free of charge for **non-commercial purposes** only.
+
+You are permitted to:
+- use the software for personal, educational, or academic purposes,
+- modify, copy, and distribute the source code,
+- include it in open-source projects, **as long as no commercial intent is involved**.
+
+You are **not permitted** to:
+- use the software for any commercial purpose, including but not limited to:
+  - incorporating it into paid products or services,
+  - using it in commercial platforms or client work,
+  - selling or licensing the software or any derivative works.
+
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to fitness for a particular purpose.
 
 ---

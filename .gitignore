@@ -28,3 +28,9 @@ Thumbs.db
 *.txt
 
 *.csv
+
+.gitignore
+
+gui_launcher.py
+*.spec
+dist/
