@@ -48,12 +48,15 @@ class SnappingCursor:
             self.ax.figure.canvas.draw()
 
 def plot(results):
-    frequencies = results[:, 2]
+
     rms1 = results[:, 0]
+    rms1 = np.array(rms1, dtype=float)
     rms2 = results[:, 1]
+    rms2 = np.array(rms2, dtype=float)
+    frequencies = results[:, 2]
     phase = results[:, 3]
 
-    magnitude = 20 * np.log10(rms2 / rms1)
+    magnitude = 20 * np.log10((rms2) / (rms1))
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), dpi=100, sharex=True)
 

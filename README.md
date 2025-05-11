@@ -1,6 +1,6 @@
 # PyVISA GUI Application
 
-A modern GUI application for communicating with measurement instruments such as oscilloscopes and function generators — built with Python, [PyVISA](https://pyvisa.readthedocs.io/), and [customtkinter](https://customtkinter.tomschimansky.com/).
+A modern GUI application for communicating with measurement instruments such as oscilloscopes and function generators — built with Python, [PyVISA](https://pyvisa.readthedocs.io/) and [customtkinter](https://customtkinter.tomschimansky.com/).
 
 ---
 
@@ -8,7 +8,7 @@ A modern GUI application for communicating with measurement instruments such as 
 
 - **Device Detection** – finds and configures connected VISA devices.
 - **Data Plot in Display** – visual representation of measurement results.
-- **Settings Management** – GUI for user preferences and application settings.
+- **Settings Management** – GUI for application settings.
 - **Integrated Terminal** – embedded console output.
 
 ---
@@ -18,7 +18,7 @@ A modern GUI application for communicating with measurement instruments such as 
 ```
 pyvisa/
 ├── main.py                  # Entry point of the application
-├── requirements.txt         # 
+├── requirements.txt          
 ├── UI/                      # GUI components (customtkinter)
 │   ├── device_input.py      # Hardware configuration
 │   ├── mainframe.py         # Main window

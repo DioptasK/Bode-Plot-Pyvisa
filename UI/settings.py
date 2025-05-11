@@ -80,7 +80,8 @@ class settings(customtkinter.CTkFrame):
                 self.master.results_for_export = results
 
                 self.master.after(0, self.master.terminalframe.progressbar.stop)
-                self.master.after(0, lambda: Thread(target=plot, args=(results,), daemon=True).start())
+                self.master.after(0, lambda: plot(results))
+                #plot(results)
                 self.master.after(0, lambda: self.start_button.configure(state="normal"))
                 self.master.after(0, lambda: self.master.terminalframe.export_csv_button.configure(state="normal"))
 
@@ -108,8 +109,8 @@ class settings(customtkinter.CTkFrame):
             functiongenerator = self.master.hardwareframe.signalgenerator.get()
             scope_manufacturer = self.master.hardwareframe.scope_manufacturer.get()
             functiongenerator_manufacturer = self.master.hardwareframe.signalgenerator_manufacturer.get()
-            probe_1 = self.master.hardwareframe.probe_1.get()
-            probe_2 = self.master.hardwareframe.probe_2.get()
+            probe_1 = int(self.master.hardwareframe.probe_1.get())
+            probe_2 = int(self.master.hardwareframe.probe_2.get())
             
             parameter.append(startfrequency)
             parameter.append(stopfrequency)
@@ -125,6 +126,7 @@ class settings(customtkinter.CTkFrame):
             parameter.append(probe_2)
             if check(parameter):
                 self.master.parameters = parameter
+                self.start_button.configure(state = "normal")
 
         self.check_button = customtkinter.CTkButton(self, text="Check", command=check_params)
         self.check_button.grid(row=6, column=0, padx=10, pady=5)

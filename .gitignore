@@ -34,3 +34,4 @@ Thumbs.db
 gui_launcher.py
 *.spec
 dist/
+test.py

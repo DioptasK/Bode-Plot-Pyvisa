@@ -67,8 +67,8 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
     scope.set_channel_output(2, "ON")
     scope.set_channel_units(1, "V")
     scope.set_channel_units(2, "V")
-    scope.set_channel_attenuation(1, int(probe_1))
-    scope.set_channel_attenuation(2, int(probe_2))
+    #scope.set_channel_attenuation(1, int(probe_1))#TODO throwing errors
+    #scope.set_channel_attenuation(2, int(probe_2))
     scope.set_channel_offset(1, 0E0)
     scope.set_channel_offset(2, 0E0)
     scope.set_channel_label(1, "INPUT")
@@ -80,8 +80,7 @@ def scope_setup(scope, use_as_functiongenerator, pkpk, frequency, probe_1, probe
     #scope.set_channel_vertical_scale(1, pkpk/9)
     scope.measure_bode_setup(1, 2)
 
-
-    if use_as_functiongenerator:
+    if use_as_functiongenerator:#TODO:
         scope.set_output("ON")
         scope.set_waveform("SINusoid")
         scope.set_frequency(frequency)
@@ -165,7 +164,7 @@ def query(parameter, stop_event):
                 
 
             if scope_is_functiongenerator: 
-                scope.set_frequency(frequency)
+                scope.set_frequency(frequency)#TODO:
             else:
                 functiongenerator.set_frequency(frequency)
             x_axis_scaling(scope, frequency)

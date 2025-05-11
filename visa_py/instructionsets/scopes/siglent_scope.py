@@ -15,7 +15,10 @@ class SiglentScope(BaseScope):
         self.inst.write(f":CHANnel{channel}:UNIT {units}")
     
     def set_channel_attenutaion(self, channel: int, attenuation: int):
-        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attenuation}")
+        #self.inst.write(f":CHANnel{channel}:PROBe VALue,{attenuation}")
+        attenuation_sci = f"{attenuation:.2E}"
+        self.inst.write(f":CHANnel{channel}:PROBe VALue,{attenuation_sci}")
+        #self.inst.write(f"CHAN{channel}:PROB  VAL,{attentuation_sci} ")
     
     def set_channel_coupling(self, channel: int, coupling: str):
         self.inst.write(f":CHANnel{channel}:COUPling {coupling}")
@@ -107,7 +110,9 @@ class SiglentScope(BaseScope):
         else: raise RuntimeError("Only Channel 1 and 2 can be used for measurement")
     
     def measure_freq(self, channel: int):
-        float(self.inst.query(f":MEASure:ADVanced:P3:STATistics? MEAN"))
+        freq =  float(self.inst.query(f":MEASure:ADVanced:P3:STATistics? MEAN"))
+        return freq
     
     def measure_phase(self, channel1: int, channel2: int):
         phase = float(self.inst.query(f":MEASure:ADVanced:P4:STATistics? MEAN"))
+        return phase

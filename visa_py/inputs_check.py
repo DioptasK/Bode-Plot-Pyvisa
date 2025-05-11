@@ -1,6 +1,6 @@
 from visa_py.resources import check_connection
 
-def check(input):#TODO: test functionality  #TODO: Load yaml files
+def check(input):#TODO: Load yaml files
     startfrequenzy = 0
     stopfrequenzy = 0
     amplitude = 0
@@ -65,13 +65,13 @@ def check(input):#TODO: test functionality  #TODO: Load yaml files
     
     probe_1 = input[10]
     if not probe_1 == "Probe":
-        if not isinstance(probe_1, int) and probe_1 >= 0:
+        if not isinstance(probe_1, int) and int(probe_1) >= 0:
             print("Probe_1 must be an unsigned integer.")
             return False
     
     probe_2 = input[11]
     if not probe_2 == "Probe":
-        if not isinstance(probe_2, int) and probe_2 >= 0:
+        if not isinstance(probe_2, int) and int(probe_2) >= 0:
             print("Probe_2 must be an unsigned integer.")
             return False
 

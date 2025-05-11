@@ -34,7 +34,6 @@ class device_input(customtkinter.CTkFrame):
         self.signalgenerator_manufacturer.grid(row=2, column=1, padx=10, pady=5)
         
         def refresh():
-            self.textbox.insert("end", "Searching for devices...\n")
             devices = resources.get_connected_devices()
             if len(devices) == 0:
                 self.textbox.insert("end", "No devices found.\n")
@@ -78,10 +77,10 @@ class device_input(customtkinter.CTkFrame):
         self.check_connection_button = customtkinter.CTkButton(self, text="Check Connection", command=check)
         self.check_connection_button.grid(row=3, column=1,padx=10, pady=5)
 
-        self.probe_1 = customtkinter.CTkOptionMenu(self, values=["Probe","10", "1"])
+        self.probe_1 = customtkinter.CTkOptionMenu(self, values=["10", "1"])
         self.probe_1.grid(row=4, column=0,padx=10,pady=5)
 
-        self.probe_2 = customtkinter.CTkOptionMenu(self, values=["Probe","10", "1"])
+        self.probe_2 = customtkinter.CTkOptionMenu(self, values=["10", "1"])
         self.probe_2.grid(row=4, column=1,padx=10,pady=5)
 
         self.textbox = customtkinter.CTkTextbox(self)
