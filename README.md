@@ -76,17 +76,73 @@ pip install -r requirements.txt
 
 ## ▶️ Usage
 
+### Run with CLI options:
+
+```bash
+python3 main.py [-options]
+```
+
 ### Run with GUI:
 
 ```bash
 python3 main.py -u
 ```
 
-### Run with CLI options:
+## Device Setup
+
+### Enter Device IDs Manually
+You can directly enter the VISA ID of your oscilloscope and/or function generator in the respective fields `Scope` and `Signagenerator`.
+
+### Find Connected Devices
+Alternatively, click the **"Get Devices"** button to scan for connected instruments.  
+⚠️ Make sure your user account has access to the corresponding interface (e.g., USB, Ethernet, etc.).
+**For USB devices**, you can check and adjust access permissions using:
 
 ```bash
-python3 main.py [-options]
+lsusb
+sudo chmod 666 /dev/bus/usb/003/019
 ```
+> Replace `003` and `019` with the bus and device numbers from the `lsusb` output.
+
+### Function Generator via Scope
+If your scope has a built-in function generator, you may only need to enter the scope’s ID.  
+The program will automatically use the internal generator if available.
+
+### Select Manufacturer
+⚠️ Choose the instrument manufacturer.  
+**Default:** `Siglent`.
+
+### Set Probe Attenuation
+Adjust the probe attenuation according to your probe setup.  
+**Default:** `10x`.
+
+---
+
+## Measurement Setup
+
+### Sweep Type
+- `"lin"`: Linear sweep – divides the frequency range into equal steps.  
+- `"exp"`: Exponential sweep – steps grow exponentially over the range.
+
+### Samples
+Set the number of measurement points across the entire frequency range.
+
+---
+
+## Run the Measurement
+
+1. Click **"Check"** to validate all input parameters.
+2. If validation passes, click **"Start"** to begin the measurement.
+3. Results will be:
+   - Printed in the terminal.
+   - Plotted in a new window after the sweep is completed.
+
+---
+
+## Exporting Results
+
+After the measurement is complete, click **"Export CSV"** to save the results as a `.csv` file.
+
 
 ---
 
